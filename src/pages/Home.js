@@ -1,81 +1,7 @@
-import { Checkbox, Col, Input, Row, Space, Table, Tag } from 'antd';
-import React, { useEffect } from 'react';
+import { Checkbox, Col, Input, Row, Table, Tag } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { initRestaurantsLoad } from './../store/actions/restaurant';
-
-const columns = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: text => <a>{text}</a>,
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-        key: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
-    },
-    {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <>
-                {tags.map(tag => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </>
-        ),
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-            <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
-            </Space>
-        ),
-    },
-];
-
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
-
 
 const options = [
     { label: 'Sunday', value: 1 },
@@ -87,21 +13,71 @@ const options = [
     { label: 'Saturday', value: 7 }
 ];
 
+const Home = ({ loadRestaurants, restaurants }) => {
 
+    const [params, setParams] = useState({ page: 1, offset: 0, name: '', days: [0, 2, 4, 5, 6] })
+    const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
-const onChange = (e) => {
-    console.log('event: ', e);
-}
+    const initloadRestaurants = useCallback(() => {
+        loadRestaurants(params)
+    }, [loadRestaurants, params]);
 
-const onSearch = (e) => {
-    console.log('event: ', e);
-}
-
-const Home = ({ loadRestaurants }) => {
+    const columns = [
+        {
+            title: 'id',
+            dataIndex: 'id',
+            key: 'id'
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Opening Hours',
+            dataIndex: 'opening_hours',
+            key: 'opening_hours',
+            render: opening_hours => (
+                <span>
+                    {opening_hours.map(opening_hour => {
+                        return (
+                            <Tag key={opening_hour.id}>
+                                {opening_hour.week_day}
+                            </Tag>
+                        );
+                    })}
+                </span>
+            ),
+        },
+        // {
+        //     title: 'Action',
+        //     key: 'action',
+        //     render: () => (
+        //         <Space size="middle">
+        //             <Button type="primary" shape="circle" icon={<LikeFilled />} />
+        //         </Space>
+        //     ),
+        // },
+    ];
 
     useEffect(() => {
-        loadRestaurants({ page: 1, offset: 0 })
-    }, [])
+        initloadRestaurants()
+    }, [initloadRestaurants])
+
+
+    const onChange = (e) => {
+        console.log('event: ', e);
+    }
+
+    const onSearch = (e) => {
+        console.log('event: ', e);
+    }
+
+    const rowSelection = {
+        onChange: key => {
+            setSelectedRowKeys(key)
+        },
+    };
 
     return (
         <>
@@ -114,7 +90,15 @@ const Home = ({ loadRestaurants }) => {
                         <Checkbox.Group options={options} defaultValue={[1]} onChange={onChange} />
                     </Row>
                     <Row align='middle' justify='center' gutter={[16, 24]}>
-                        <Table columns={columns} dataSource={data} />
+                        <Col span={24}>
+                            <Table
+                                rowSelection={rowSelection}
+                                size="large"
+                                columns={columns}
+                                rowKey="id"
+                                dataSource={restaurants}
+                                bordered />
+                        </Col>
                     </Row>
                 </Col>
             </Row>
@@ -126,4 +110,8 @@ const mapDispatchToProps = dispatch => ({
     loadRestaurants: (params) => dispatch(initRestaurantsLoad(params)),
 });
 
-export default connect(null, mapDispatchToProps)(Home);
+const mapStateToProps = ({ restaurants }) => ({
+    restaurants: restaurants.restaurants
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

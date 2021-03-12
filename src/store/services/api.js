@@ -11,8 +11,11 @@ const POST = (url, body) => {
     }).catch((err) => err.response);
 }
 
-const GET = async (url) => {
-    return await instance.post(url);
+const GET = async (url, params = {}) => {
+    return await instance.get(url, {
+        params: params
+    }).then(res => res)
+    .catch((err) => err.response);
 }
 
 export const signin = async (user) => {
@@ -21,6 +24,11 @@ export const signin = async (user) => {
 
 export const register = async (user) => {
     return await POST(`/users`, user);
+}
+
+export const getRestaurant = async (params) => {
+    const { data } = await GET(`restaurants`, params);
+    return data;
 }
 
 export const signOut = () => {

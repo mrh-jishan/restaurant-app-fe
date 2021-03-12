@@ -6,12 +6,10 @@ export const initRestaurantsLoad = (params) => ({
     params: params
 })
 
-
 export const successRestaurantsLoad = (restaurants) => ({
     type: RESTAURANT.LOAD_SUCCESS,
     restaurants: restaurants
 })
-
 
 export const errorRestaurantsLoad = (err) => ({
     type: RESTAURANT.LOAD_ERROR,
