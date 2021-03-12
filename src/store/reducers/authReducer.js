@@ -6,11 +6,18 @@ const initState = {
     isloading: false,
     user: {},
     token: null,
-    body: null,
 }
 
 const authReducer = (state = initState, action) => {
     switch (action.type) {
+
+        case LOGIN.INIT_AUTH:
+            return {
+                ...state,
+                user: action.user,
+                token: action.token
+            }
+
         case LOGIN.AUTH_SUCCESS:
             return {
                 ...state,

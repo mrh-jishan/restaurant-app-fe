@@ -27,10 +27,15 @@ export const signOut = () => {
     localStorage.clear();
 }
 
-export const getAccessToken = () => {
-    return "AccessToken";
+export const getLocalStorage = () => {
+    const data = localStorage.getItem("app-data")
+    if (data) {
+        return JSON.parse(data)
+    } else {
+        return null;
+    }
 }
 
-export const saveToken = (token) => {
-    return "SavedToken";
+export const saveLocalStorage = (data) => {
+    return localStorage.setItem("app-data", JSON.stringify(data))
 }

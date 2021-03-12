@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER } from "../constants"
+import { LOGIN } from "../constants"
 
 /*
 ******************
