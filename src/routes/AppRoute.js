@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import Footer from '../components/Footer';
 import history from '../history';
-import About from '../pages/About';
-import Home from '../pages/Home';
-import Profile from '../pages/Profile';
-// import { logOut } from "../services/firebase";
+import { About, Home, Profile } from '../pages';
 
 const { Header, Content } = Layout;
 
@@ -20,12 +17,12 @@ const AppRoute = () => {
     }, [])
 
     const handleClick = (e) => {
-        // if (e.key === 'logout') {
-        //     logOut();
-        // } else {
-        //     setCurrent(e.key)
-        //     history.push(e.key)
-        // }
+        if (e.key === 'logout') {
+            // logOut();
+        } else {
+            setCurrent(e.key)
+            history.push(e.key)
+        }
     };
 
     return (

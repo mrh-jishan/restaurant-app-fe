@@ -122,4 +122,4 @@ const mapDispatchToProps = dispatch => ({
     loginSuccess: (user, token) => dispatch(successLogin(user, token)),
 });
 
-export default connect(null, mapDispatchToProps)(Login);;
+export default connect(null, mapDispatchToProps)(Login);
