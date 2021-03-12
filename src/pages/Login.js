@@ -1,11 +1,23 @@
-import { Col, Layout, Row, Typography } from 'antd';
+import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-// import googleIcon from './../images/google-icon.svg';
-// import { auth, signInWithGoogle } from "./../services/firebase";
 
 
-
+const layout = {
+    labelCol: {
+        span: 8,
+    },
+    wrapperCol: {
+        span: 16,
+    },
+};
+const tailLayout = {
+    wrapperCol: {
+        offset: 8,
+        span: 16,
+    },
+};
 
 const { Header, Content } = Layout;
 
@@ -15,6 +27,14 @@ const Login = ({ history }) => {
         // const user = auth.currentUser;
         console.log('user: ');
     }, []);
+
+    const onFinish = (values) => {
+        console.log('Success:', values);
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
 
     return (
         <Layout>
@@ -26,12 +46,57 @@ const Login = ({ history }) => {
                     justify='center'
                     style={{ minHeight: '300px' }}>
                     <Col >
-                        <Typography.Title>Welcome to Find-RESTAURANT</Typography.Title>
-                        <button className="login-provider-button"
-                            onClick={()=>{}}>
-                            {/* <img src={googleIcon} alt="google icon" height={40} width={40} /> */}
-                            <span> Signin with Google</span>
-                        </button>
+                        <Typography.Title>Welcome to FIND-RESTAURANT</Typography.Title>
+                        <Form
+                            {...layout}
+                            name="basic"
+                            initialValues={{
+                                remember: true,
+                            }}
+                            onFinish={onFinish}
+                            onFinishFailed={onFinishFailed}
+                        >
+                            <Form.Item
+                                label="Username"
+                                name="username"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your username!',
+                                    },
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Password"
+                                name="password"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your password!',
+                                    },
+                                ]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
+
+                            <Form.Item {...tailLayout}>
+                                <Button type="primary" htmlType="submit">
+                                    Login
+                                </Button>
+                            </Form.Item>
+
+                            <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+                                Don't you have an account?
+                                <Link to="/auth/register">
+                                    <Button type="link" >Register Here</Button>
+                                </Link>
+                            </Form.Item>
+
+
+                        </Form>
                     </Col>
                 </Row>
             </Content>

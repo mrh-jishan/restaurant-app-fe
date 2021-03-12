@@ -2,8 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { AuthContext } from "../AuthProvider";
 import history from "../history";
-import Login from "../pages/Login";
-
+import { Login, Register } from "../pages";
 
 const AuthRoute = () => {
     const { authenticated } = useContext(AuthContext);
@@ -17,6 +16,7 @@ const AuthRoute = () => {
     return (
         <Switch>
             <Route path="/auth/login" component={Login} />
+            <Route path="/auth/register" component={Register} />
             <Redirect to="/auth/login" from="/auth" />
         </Switch>
     );
