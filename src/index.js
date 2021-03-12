@@ -1,18 +1,21 @@
 import 'antd/dist/antd.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { Router } from "react-router-dom";
 import App from './App';
-import { AuthProvider } from './AuthProvider';
 import history from './history';
 import reportWebVitals from './reportWebVitals';
+import configureStore from './store';
+
+const store = configureStore();
 
 ReactDOM.render(
-  <AuthProvider>
+  <Provider store={store}>
     <Router history={history}>
       <App />
     </Router>
-  </AuthProvider>,
+  </Provider>,
   document.getElementById('root')
 );
 

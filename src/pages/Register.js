@@ -1,8 +1,8 @@
-import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import { Button, Col, Form, Input, Layout, Modal, Row, Typography } from 'antd';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { POST } from '../api';
-import Footer from '../components/Footer';
+import { Footer } from '../components';
+import { register } from '../store/services/api';
 
 const layout = {
   labelCol: {
@@ -21,24 +21,33 @@ const tailLayout = {
 
 const { Header, Content } = Layout;
 
+const openSuccess = (message) => {
+  Modal.success({
+    title: 'Success Message',
+    content: message,
+  });
+}
+
+const openError = (message) => {
+  Modal.error({
+    title: 'Error Message',
+    content: message,
+  });
+}
+
 const Register = ({ history }) => {
 
-  useEffect(() => {
-    // const user = auth.currentUser;
-    console.log('user: ');
-  }, []);
-
   const onFinish = (values) => {
-    console.log('Success:', values);
-        POST('/users', { user: values }).then(res => {
-            console.log('res: ', res);
-        }).catch(err => {
-            console.log('err: ', err);
-        })
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    register({ user: values }).then(({ data }) => {
+      if (data.success) {
+        openSuccess("Registration Success")
+        history.push('/login')
+      } else {
+        openError(data.message)
+      }
+    }).catch(err => {
+      openError("Something went wrong !!!")
+    })
   };
 
   return (
@@ -55,19 +64,15 @@ const Register = ({ history }) => {
             <Form
               {...layout}
               name="basic"
-              initialValues={{
-                remember: true,
-              }}
               onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
             >
-
-            <Form.Item
+              <Form.Item
                 label="Full Name"
                 name="name"
                 rules={[
                   {
                     required: true,
+                    min: 6,
                     message: 'Please input your full name!',
                   },
                 ]}
@@ -81,6 +86,7 @@ const Register = ({ history }) => {
                 rules={[
                   {
                     required: true,
+                    min: 6,
                     message: 'Please input your username!',
                   },
                 ]}
@@ -94,6 +100,8 @@ const Register = ({ history }) => {
                 rules={[
                   {
                     required: true,
+                    min: 6,
+                    max: 12,
                     message: 'Please input your password!',
                   },
                 ]}
@@ -104,7 +112,7 @@ const Register = ({ history }) => {
               <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">
                   Register
-        </Button>
+                </Button>
               </Form.Item>
 
               <Form.Item>
@@ -122,5 +130,6 @@ const Register = ({ history }) => {
     </Layout>
   )
 }
+
 
 export default Register;

@@ -1,8 +1,10 @@
-import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import { Button, Col, Form, Input, Layout, Modal, Row, Typography } from 'antd';
+import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { POST } from '../api';
-import Footer from '../components/Footer';
+import { Footer } from '../components';
+import { successLogin } from '../store/actions/auth';
+import { signin } from './../store/services/api';
 
 
 const layout = {
@@ -22,24 +24,34 @@ const tailLayout = {
 
 const { Header, Content } = Layout;
 
-const Login = ({ history }) => {
+const openSuccess = (message) => {
+    Modal.success({
+        title: 'Success Message',
+        content: message,
+    });
+}
 
-    useEffect(() => {
-        // const user = auth.currentUser;
-        console.log('user: ');
-    }, []);
+const openError = (message) => {
+    Modal.error({
+        title: 'Error Message',
+        content: message,
+    });
+}
+
+const Login = ({ history, loginSuccess }) => {
 
     const onFinish = (values) => {
-        console.log('Success:', values);
-        POST('/auth', { auth: values }).then(res => {
-            console.log('res: ', res);
+        signin({ auth: values }).then(({ data }) => {
+            if (data.success) {
+                loginSuccess(data.data.user, data.data.token)
+                openSuccess("Login Success")
+                history.push('/secure/home')
+            } else {
+                openError(data.message)
+            }
         }).catch(err => {
-            console.log('err: ', JSON.stringify(err.message));
+            openError("Something went wrong !!!")
         })
-    };
-
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
     };
 
     return (
@@ -56,9 +68,7 @@ const Login = ({ history }) => {
                         <Form
                             {...layout}
                             name="basic"
-                            initialValues={{}}
                             onFinish={onFinish}
-                            onFinishFailed={onFinishFailed}
                         >
                             <Form.Item
                                 label="Username"
@@ -108,4 +118,8 @@ const Login = ({ history }) => {
     )
 }
 
-export default Login;
+const mapDispatchToProps = dispatch => ({
+    loginSuccess: (user, token) => dispatch(successLogin(user, token)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);;

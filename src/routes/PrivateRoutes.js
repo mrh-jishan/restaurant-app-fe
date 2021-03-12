@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
+import { connect } from 'react-redux';
 import { Redirect, Route } from "react-router-dom";
-import { AuthContext } from "./../AuthProvider";
 
-const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
-    const { authenticated, loadingAuthState } = useContext(AuthContext);
-    if (loadingAuthState) {
+const PrivateRoute = ({ component: RouteComponent, auth, ...rest }) => {
+    const { isLoggedIn, isloading } = auth;
+
+    if (isloading) {
         return (
             <div>
                 <h1>Loading...</h1>
@@ -15,13 +16,18 @@ const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
         <Route
             {...rest}
             render={routeProps =>
-                authenticated ? (
+                isLoggedIn ? (
                     <RouteComponent {...routeProps} />
                 ) : (
-                        <Redirect to={{ pathname: "/auth/login", state: { prevPath: rest.path } }} />
-                    )
+                    <Redirect to={{ pathname: "/auth/login", state: { prevPath: rest.path } }} />
+                )
             }
         />
     );
 }
-export default PrivateRoute
+
+const mapStateToProps = ({ auth }) => ({
+    auth
+});
+
+export default connect(mapStateToProps, null)(PrivateRoute);;

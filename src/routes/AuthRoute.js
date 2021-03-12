@@ -1,18 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import { AuthContext } from "../AuthProvider";
-import history from "../history";
 import { Login, Register } from "../pages";
 
 const AuthRoute = () => {
-    const { authenticated } = useContext(AuthContext);
-
-    useEffect(() => {
-        if (authenticated) {
-            history.push('/secure/home')
-        }
-    }, [authenticated])
-
     return (
         <Switch>
             <Route path="/auth/login" component={Login} />
