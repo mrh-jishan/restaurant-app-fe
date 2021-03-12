@@ -1,6 +1,7 @@
 import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { POST } from '../api';
 import Footer from '../components/Footer';
 
 const layout = {
@@ -29,6 +30,11 @@ const Register = ({ history }) => {
 
   const onFinish = (values) => {
     console.log('Success:', values);
+        POST('/users', { user: values }).then(res => {
+            console.log('res: ', res);
+        }).catch(err => {
+            console.log('err: ', err);
+        })
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -101,7 +107,7 @@ const Register = ({ history }) => {
         </Button>
               </Form.Item>
 
-              <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+              <Form.Item>
                 Already have an account?
                                 <Link to="/auth/login">
                   <Button type="link" >Login Here</Button>

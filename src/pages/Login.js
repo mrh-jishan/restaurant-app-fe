@@ -1,6 +1,7 @@
 import { Button, Col, Form, Input, Layout, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { POST } from '../api';
 import Footer from '../components/Footer';
 
 
@@ -30,6 +31,11 @@ const Login = ({ history }) => {
 
     const onFinish = (values) => {
         console.log('Success:', values);
+        POST('/auth', { auth: values }).then(res => {
+            console.log('res: ', res);
+        }).catch(err => {
+            console.log('err: ', JSON.stringify(err.message));
+        })
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -50,9 +56,7 @@ const Login = ({ history }) => {
                         <Form
                             {...layout}
                             name="basic"
-                            initialValues={{
-                                remember: true,
-                            }}
+                            initialValues={{}}
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
                         >
@@ -88,13 +92,12 @@ const Login = ({ history }) => {
                                 </Button>
                             </Form.Item>
 
-                            <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+                            <Form.Item>
                                 Don't you have an account?
                                 <Link to="/auth/register">
                                     <Button type="link" >Register Here</Button>
                                 </Link>
                             </Form.Item>
-
 
                         </Form>
                     </Col>
