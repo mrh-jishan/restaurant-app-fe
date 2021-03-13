@@ -5,8 +5,10 @@ import { getRestaurant } from '../services/api';
 
 function* initLoadRestaurant() {
     try {
-        const { params } = yield select(state => state.restaurants);
-        const { data } = yield call(getRestaurant, {days: params.days.join(), name: params.name})
+        const { page, name, days, timeRange } = yield select(state => state.restaurants.params);
+        const [opens, closes] = timeRange;
+
+        const { data } = yield call(getRestaurant, { days: days.join(), name: name, page: page, opens: opens.format('HH:mm'), closes: closes.format('HH:mm'), })
         yield put(successRestaurantsLoad(data))
     } catch (e) {
         yield put(errorRestaurantsLoad(e))

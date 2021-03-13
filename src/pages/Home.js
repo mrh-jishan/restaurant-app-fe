@@ -1,21 +1,45 @@
-import { Checkbox, Col, Input, Row, Table, Tag } from 'antd';
+import { ShareAltOutlined } from '@ant-design/icons';
+import { Button, Checkbox, Col, Form, Input, Row, Space, Table, Tag, TimePicker, Typography } from 'antd';
+import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { initRestaurantsLoad } from './../store/actions/restaurant';
 
 const options = [
-    { label: 'Sunday', value: 1 },
-    { label: 'Monday', value: 2 },
-    { label: 'Tuesday', value: 3 },
-    { label: 'Wednesday', value: 4 },
-    { label: 'Thursday', value: 5 },
-    { label: 'Friday', value: 6 },
-    { label: 'Saturday', value: 7 }
+    { label: 'Sunday', value: 0 },
+    { label: 'Monday', value: 1 },
+    { label: 'Tuesday', value: 2 },
+    { label: 'Wednesday', value: 3 },
+    { label: 'Thursday', value: 4 },
+    { label: 'Friday', value: 5 },
+    { label: 'Saturday', value: 6 }
 ];
+
+const layout = {
+    labelCol: {
+        span: 8,
+    },
+    wrapperCol: {
+        span: 16,
+    },
+};
+const tailLayout = {
+    wrapperCol: {
+        offset: 8,
+        span: 16,
+    },
+};
+
 
 const Home = ({ loadRestaurants, restaurants }) => {
 
-    const [params, setParams] = useState({ page: 1, offset: 0, name: '', days: [0, 2, 4, 5, 6] })
+    const [params, setParams] = useState({
+        page: 1,
+        offset: 0,
+        name: '',
+        days: [0, 1, 2, 3, 4, 5, 6],
+        timeRange: [moment('01:00', 'HH:mm'), moment('23:00', 'HH:mm')]
+    })
     const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
     const initloadRestaurants = useCallback(() => {
@@ -35,6 +59,11 @@ const Home = ({ loadRestaurants, restaurants }) => {
         },
         {
             title: 'Opening Hours',
+            dataIndex: 'open_hours',
+            key: 'open_hours',
+        },
+        {
+            title: 'Search Hours',
             dataIndex: 'opening_hours',
             key: 'opening_hours',
             render: opening_hours => (
@@ -42,22 +71,22 @@ const Home = ({ loadRestaurants, restaurants }) => {
                     {opening_hours.map(opening_hour => {
                         return (
                             <Tag key={opening_hour.id}>
-                                {opening_hour.week_day}
+                                {opening_hour.week_day} - {moment(opening_hour.opens).format('HH:mm')} : {moment(opening_hour.closes).format('HH:mm')}
                             </Tag>
                         );
                     })}
                 </span>
             ),
         },
-        // {
-        //     title: 'Action',
-        //     key: 'action',
-        //     render: () => (
-        //         <Space size="middle">
-        //             <Button type="primary" shape="circle" icon={<LikeFilled />} />
-        //         </Space>
-        //     ),
-        // },
+        {
+            title: 'Action',
+            key: 'action',
+            render: () => (
+                <Space size="middle">
+                    <Button type="primary" shape="circle" icon={<ShareAltOutlined />} />
+                </Space>
+            ),
+        },
     ];
 
     useEffect(() => {
@@ -79,16 +108,60 @@ const Home = ({ loadRestaurants, restaurants }) => {
         },
     };
 
+    function onTimeChange(time, timeString) {
+        console.log(time, timeString);
+    }
+
+    const onFinish = (values) => {
+        loadRestaurants(values)
+    };
+
     return (
         <>
             <Row align='middle' justify='center'>
                 <Col>
-                    <Row align='middle' justify='center' style={{ marginTop: 25, marginBottom: 25 }}>
-                        <Input.Search placeholder="search by name" allowClear enterButton="Search" size="large" onSearch={onSearch} />
-                    </Row>
-                    <Row align='middle' justify='center' style={{ marginTop: 25, marginBottom: 25 }}>
-                        <Checkbox.Group options={options} defaultValue={[1]} onChange={onChange} />
-                    </Row>
+
+                    <Typography.Title>Filter restaurants</Typography.Title>
+                    <Form
+                        {...layout}
+                        name="basic"
+                        initialValues={params}
+                        onFinish={onFinish}
+                    >
+                        <Form.Item
+                            label="Search by name"
+                            name="name"
+                        >
+                            <Input
+                                placeholder="search by name"
+                                allowClear
+                                size="large" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Select opening days"
+                            name="days"
+                        >
+                            <Checkbox.Group options={options} onChange={onChange} />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Select opening time"
+                            name="timeRange"
+                        >
+                            <TimePicker.RangePicker
+                                format="HH:mm"
+                                onChange={onTimeChange} />
+                        </Form.Item>
+
+                        <Form.Item {...tailLayout}>
+                            <Button type="primary" htmlType="submit">
+                                Search
+                                </Button>
+                        </Form.Item>
+
+                    </Form>
+
                     <Row align='middle' justify='center' gutter={[16, 24]}>
                         <Col span={24}>
                             <Table
