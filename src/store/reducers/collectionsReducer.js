@@ -1,31 +1,29 @@
-import { RESTAURANT } from "../constants";
+import { COLLECTIONS } from "../constants";
 
 const initState = {
     err: null,
     isloading: false,
-    restaurants: [],
-    params: {},
+    collections: [],
 }
 
-const restaurantsReducer = (state = initState, action) => {
+const collectionsReducer = (state = initState, action) => {
     switch (action.type) {
 
-        case RESTAURANT.LOAD_INIT:
+        case COLLECTIONS.LOAD_INIT:
             return {
                 ...state,
                 isloading: true,
-                params: action.params
             }
 
-        case RESTAURANT.LOAD_SUCCESS:
+        case COLLECTIONS.LOAD_SUCCESS:
             return {
                 ...state,
                 isloading: false,
-                restaurants: action.restaurants,
+                collections: action.collections,
             }
 
 
-        case RESTAURANT.LOAD_ERROR:
+        case COLLECTIONS.LOAD_ERROR:
             return {
                 ...state,
                 isloading: false,
@@ -38,4 +36,4 @@ const restaurantsReducer = (state = initState, action) => {
     }
 };
 
-export default restaurantsReducer;
+export default collectionsReducer;

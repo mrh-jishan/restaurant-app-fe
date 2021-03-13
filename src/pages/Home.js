@@ -3,7 +3,8 @@ import { Button, Checkbox, Col, Form, Input, notification, Row, Space, Table, Ta
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { AddFavourite } from '../components';
+import { AddFavourite, FavouriteList } from '../components';
+import { initCollectionsLoad } from '../store/actions/collections';
 import { addCollection } from '../store/services/api';
 import { initRestaurantsLoad } from './../store/actions/restaurant';
 
@@ -34,34 +35,7 @@ const tailLayout = {
 
 const colors = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple']
 
-const Home = ({ loadRestaurants, restaurants }) => {
-
-    const [params] = useState({
-        page: 1,
-        offset: 0,
-        name: '',
-        days: [0, 1, 2, 3, 4, 5, 6],
-        timeRange: [moment('01:00', 'HH:mm'), moment('23:00', 'HH:mm')]
-    })
-
-    const [state, setState] = useState({ selectedRowKeys: [], selectedRestaurants: [] });
-
-    const { selectedRowKeys, selectedRestaurants } = state;
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const [api, contextHolder] = notification.useNotification();
-
-    const openNotification = (message) => {
-        notification.open({
-            placement: 'bottomRight',
-            description: message,
-        });
-    };
-
-    const initloadRestaurants = useCallback(() => {
-        loadRestaurants(params)
-    }, [loadRestaurants, params]);
+const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) => {
 
     const columns = [
         {
@@ -106,6 +80,40 @@ const Home = ({ loadRestaurants, restaurants }) => {
         },
     ];
 
+    const [params] = useState({
+        page: 1,
+        offset: 0,
+        name: '',
+        days: [0, 1, 2, 3, 4, 5, 6],
+        timeRange: [moment('01:00', 'HH:mm'), moment('23:00', 'HH:mm')]
+    })
+
+    const [state, setState] = useState({ selectedRowKeys: [], selectedRestaurants: [] });
+
+    const { selectedRowKeys, selectedRestaurants } = state;
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [visible, setVisible] = useState(false);
+
+    const showDrawer = () => {
+        setVisible(true);
+    };
+    const onClose = () => {
+        setVisible(false);
+    };
+
+    const openNotification = (message) => {
+        notification.open({
+            placement: 'bottomRight',
+            description: message,
+        });
+    };
+
+    const initloadRestaurants = useCallback(() => {
+        loadRestaurants(params)
+    }, [loadRestaurants, params]);
+
     useEffect(() => {
         initloadRestaurants()
     }, [initloadRestaurants])
@@ -113,10 +121,6 @@ const Home = ({ loadRestaurants, restaurants }) => {
     const onSelectChange = (selectedRowKeys, selectedRestaurants) => {
         setState({ selectedRowKeys, selectedRestaurants });
     };
-
-    const onCollectionAdd = () => {
-        showModal()
-    }
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -136,6 +140,7 @@ const Home = ({ loadRestaurants, restaurants }) => {
             if (res.success) {
                 setIsModalVisible(false);
                 setState({ selectedRowKeys: [], selectedRestaurants: [] });
+                loadCollections();
             }
             openNotification(res.message)
         }).catch(err => {
@@ -196,12 +201,12 @@ const Home = ({ loadRestaurants, restaurants }) => {
                             <Button type='primary'
                                 disabled={selectedRestaurants.length === 0}
                                 icon={<FolderAddFilled />}
-                                onClick={onCollectionAdd}>
+                                onClick={showModal}>
                                 Add to collections
                             </Button>
                         </Col>
                         <Col span={3}>
-                            <Button type='link' icon={<DashboardFilled />}>My collections</Button>
+                            <Button type='link' icon={<DashboardFilled />} onClick={showDrawer}>My collections</Button>
                         </Col>
                     </Row>
                     <Row align='middle' justify='center' gutter={[16, 24]}>
@@ -229,6 +234,7 @@ const Home = ({ loadRestaurants, restaurants }) => {
                         </Col>
 
                         <AddFavourite isModalVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
+                        <FavouriteList onClose={onClose} visible={visible} data={collections} loadCollections={loadCollections} />
                     </Row>
                 </Col>
             </Row>
@@ -238,10 +244,13 @@ const Home = ({ loadRestaurants, restaurants }) => {
 
 const mapDispatchToProps = dispatch => ({
     loadRestaurants: (params) => dispatch(initRestaurantsLoad(params)),
+    loadCollections: () => dispatch(initCollectionsLoad()),
+
 });
 
-const mapStateToProps = ({ restaurants }) => ({
-    restaurants: restaurants.restaurants
+const mapStateToProps = ({ restaurants, collections }) => ({
+    restaurants: restaurants.restaurants,
+    collections: collections.collections
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
