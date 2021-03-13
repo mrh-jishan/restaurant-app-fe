@@ -3,6 +3,7 @@ import { Button, Checkbox, Col, Form, Input, Row, Space, Table, Tag, TimePicker,
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { AddFavourite } from '../components';
 import { initRestaurantsLoad } from './../store/actions/restaurant';
 
 const options = [
@@ -45,6 +46,8 @@ const Home = ({ loadRestaurants, restaurants }) => {
     const [state, setState] = useState({ selectedRowKeys: [], selectedRestaurants: [] });
 
     const { selectedRowKeys, selectedRestaurants } = state;
+
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const initloadRestaurants = useCallback(() => {
         loadRestaurants(params)
@@ -102,8 +105,23 @@ const Home = ({ loadRestaurants, restaurants }) => {
     };
 
     const onCollectionAdd = () => {
-        setState({ selectedRowKeys: [], selectedRestaurants: [] });
+        showModal()
+        // setState({ selectedRowKeys: [], selectedRestaurants: [] });
     }
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const handleOk = (values) => {
+        setIsModalVisible(false);
+        console.log('handleOk values: ', values);
+        console.log('state values: ', state);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <>
@@ -154,8 +172,9 @@ const Home = ({ loadRestaurants, restaurants }) => {
                             <Button type='primary'
                                 disabled={selectedRestaurants.length === 0}
                                 icon={<FolderAddFilled />}
-                                onClick={onCollectionAdd}
-                            >Add to collections</Button>
+                                onClick={onCollectionAdd}>
+                                Add to collections
+                            </Button>
                         </Col>
                         <Col span={3}>
                             <Button type='link' icon={<DashboardFilled />}>My collections</Button>
@@ -184,6 +203,8 @@ const Home = ({ loadRestaurants, restaurants }) => {
                                 dataSource={restaurants}
                                 bordered />
                         </Col>
+
+                        <AddFavourite isModalVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
                     </Row>
                 </Col>
             </Row>
