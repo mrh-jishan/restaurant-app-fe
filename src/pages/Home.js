@@ -1,4 +1,4 @@
-import { ShareAltOutlined } from '@ant-design/icons';
+import { DashboardFilled, FolderAddFilled, ShareAltOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Col, Form, Input, Row, Space, Table, Tag, TimePicker, Typography } from 'antd';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -30,17 +30,21 @@ const tailLayout = {
     },
 };
 
+const colors = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple']
 
 const Home = ({ loadRestaurants, restaurants }) => {
 
-    const [params, setParams] = useState({
+    const [params] = useState({
         page: 1,
         offset: 0,
         name: '',
         days: [0, 1, 2, 3, 4, 5, 6],
         timeRange: [moment('01:00', 'HH:mm'), moment('23:00', 'HH:mm')]
     })
-    const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
+    const [state, setState] = useState({ selectedRowKeys: [], selectedRestaurants: [] });
+
+    const { selectedRowKeys, selectedRestaurants } = state;
 
     const initloadRestaurants = useCallback(() => {
         loadRestaurants(params)
@@ -79,7 +83,7 @@ const Home = ({ loadRestaurants, restaurants }) => {
             ),
         },
         {
-            title: 'Action',
+            title: 'Share',
             key: 'action',
             render: () => (
                 <Space size="middle">
@@ -93,40 +97,24 @@ const Home = ({ loadRestaurants, restaurants }) => {
         initloadRestaurants()
     }, [initloadRestaurants])
 
-
-    const onChange = (e) => {
-        console.log('event: ', e);
-    }
-
-    const onSearch = (e) => {
-        console.log('event: ', e);
-    }
-
-    const rowSelection = {
-        onChange: key => {
-            setSelectedRowKeys(key)
-        },
+    const onSelectChange = (selectedRowKeys, selectedRestaurants) => {
+        setState({ selectedRowKeys, selectedRestaurants });
     };
 
-    function onTimeChange(time, timeString) {
-        console.log(time, timeString);
+    const onCollectionAdd = () => {
+        setState({ selectedRowKeys: [], selectedRestaurants: [] });
     }
-
-    const onFinish = (values) => {
-        loadRestaurants(values)
-    };
 
     return (
         <>
             <Row align='middle' justify='center'>
                 <Col>
-
                     <Typography.Title>Filter restaurants</Typography.Title>
                     <Form
                         {...layout}
                         name="basic"
                         initialValues={params}
-                        onFinish={onFinish}
+                        onFinish={(values) => loadRestaurants(values)}
                     >
                         <Form.Item
                             label="Search by name"
@@ -142,7 +130,7 @@ const Home = ({ loadRestaurants, restaurants }) => {
                             label="Select opening days"
                             name="days"
                         >
-                            <Checkbox.Group options={options} onChange={onChange} />
+                            <Checkbox.Group options={options} />
                         </Form.Item>
 
                         <Form.Item
@@ -150,8 +138,7 @@ const Home = ({ loadRestaurants, restaurants }) => {
                             name="timeRange"
                         >
                             <TimePicker.RangePicker
-                                format="HH:mm"
-                                onChange={onTimeChange} />
+                                format="HH:mm" />
                         </Form.Item>
 
                         <Form.Item {...tailLayout}>
@@ -162,10 +149,35 @@ const Home = ({ loadRestaurants, restaurants }) => {
 
                     </Form>
 
+                    <Row align='middle' justify='space-between' style={{ marginBottom: 20 }}>
+                        <Col span={3}>
+                            <Button type='primary'
+                                disabled={selectedRestaurants.length === 0}
+                                icon={<FolderAddFilled />}
+                                onClick={onCollectionAdd}
+                            >Add to collections</Button>
+                        </Col>
+                        <Col span={3}>
+                            <Button type='link' icon={<DashboardFilled />}>My collections</Button>
+                        </Col>
+                    </Row>
                     <Row align='middle' justify='center' gutter={[16, 24]}>
                         <Col span={24}>
+                            {selectedRestaurants.map((value, index) => (
+                                <Tag
+                                    style={{ marginBottom: 5 }}
+                                    key={index} color={colors[(selectedRestaurants.length + index) % 11]} >
+                                    {value.name}
+                                </Tag>
+                            )
+                            )}
+                        </Col>
+                        <Col span={24}>
                             <Table
-                                rowSelection={rowSelection}
+                                rowSelection={{
+                                    selectedRowKeys,
+                                    onChange: onSelectChange,
+                                }}
                                 size="large"
                                 columns={columns}
                                 rowKey="id"
