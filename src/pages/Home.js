@@ -1,9 +1,10 @@
 import { DashboardFilled, FolderAddFilled, ShareAltOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Form, Input, Row, Space, Table, Tag, TimePicker, Typography } from 'antd';
+import { Button, Checkbox, Col, Form, Input, notification, Row, Space, Table, Tag, TimePicker, Typography } from 'antd';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AddFavourite } from '../components';
+import { addCollection } from '../store/services/api';
 import { initRestaurantsLoad } from './../store/actions/restaurant';
 
 const options = [
@@ -48,6 +49,15 @@ const Home = ({ loadRestaurants, restaurants }) => {
     const { selectedRowKeys, selectedRestaurants } = state;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [api, contextHolder] = notification.useNotification();
+
+    const openNotification = (message) => {
+        notification.open({
+            placement: 'bottomRight',
+            description: message,
+        });
+    };
 
     const initloadRestaurants = useCallback(() => {
         loadRestaurants(params)
@@ -106,7 +116,6 @@ const Home = ({ loadRestaurants, restaurants }) => {
 
     const onCollectionAdd = () => {
         showModal()
-        // setState({ selectedRowKeys: [], selectedRestaurants: [] });
     }
 
     const showModal = () => {
@@ -114,9 +123,24 @@ const Home = ({ loadRestaurants, restaurants }) => {
     };
 
     const handleOk = (values) => {
-        setIsModalVisible(false);
-        console.log('handleOk values: ', values);
-        console.log('state values: ', state);
+        const favourite_items = selectedRowKeys.map(id => {
+            return { restaurant_id: id };
+        });
+        const body = {
+            favourite: {
+                favourite_items_attributes: favourite_items,
+                name: values.name
+            }
+        }
+        addCollection(body).then(res => {
+            if (res.success) {
+                setIsModalVisible(false);
+                setState({ selectedRowKeys: [], selectedRestaurants: [] });
+            }
+            openNotification(res.message)
+        }).catch(err => {
+            openNotification('Sorry! Something went wrong...')
+        })
     };
 
     const handleCancel = () => {

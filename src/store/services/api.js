@@ -4,8 +4,8 @@ const instance = axios.create({
     baseURL: 'https://fathomless-reef-83687.herokuapp.com/api/v1/'
 });
 
-const POST = (url, body) => {
-    return instance.post(url, body).then(res => {
+const POST = (url, body, header = {}) => {
+    return instance.post(url, body, header).then(res => {
         console.log('res: ', res);
         return res;
     }).catch((err) => err.response);
@@ -15,7 +15,17 @@ const GET = async (url, params = {}) => {
     return await instance.get(url, {
         params: params
     }).then(res => res)
-    .catch((err) => err.response);
+        .catch((err) => err.response);
+}
+
+
+const getHeader = () => {
+    const { token } = getLocalStorage();
+    return {
+        headers: {
+            Authorization: 'Bearer ' + token //the token is a variable which holds the token
+        }
+    }
 }
 
 export const signin = async (user) => {
@@ -28,6 +38,12 @@ export const register = async (user) => {
 
 export const getRestaurant = async (params) => {
     const { data } = await GET(`restaurants`, params);
+    return data;
+}
+
+export const addCollection = async (body) => {
+    const header = getHeader();
+    const { data } = await POST(`favourites`, body, header);
     return data;
 }
 

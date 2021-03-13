@@ -17,6 +17,7 @@ const AddFavourite = ({ isModalVisible, handleOk, handleCancel }) => {
 
     const onSubmit = useCallback((values) => {
         handleOk(values)
+        form.resetFields();
     }, [handleOk]);
 
     const closePopup = useCallback(() => {
