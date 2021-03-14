@@ -11,29 +11,14 @@ const Invitations = ({ loadInvitations, invitations }) => {
             key: 'id'
         },
         {
-            title: 'Collection Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
-            title: 'Restaurant Name',
-            dataIndex: 'favourite_items',
-            key: 'favourite_items',
-            render: items => (
-                <span>
-                    {items.map((fav, index) => (<Tag key={index} style={{ marginBottom: 4 }}>{fav.restaurant.name}</Tag>))}
-                </span>
-            ),
-        },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (text, record) => (
-                <Space size="middle">
-                    <Button type="primary">Update</Button>
-                    <Button danger>Delete</Button>
-                </Space>
-            ),
+            title: 'Token',
+            dataIndex: 'token',
+            key: 'token',
         },
     ];
 

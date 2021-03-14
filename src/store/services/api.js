@@ -45,6 +45,12 @@ export const addCollection = async (body) => {
     return data;
 }
 
+export const addInvitations = async (body) => {
+    const headers = getHeaders();
+    const { data } = await POST(`invitations`, body, headers);
+    return data;
+}
+
 export const getCollection = async () => {
     const headers = getHeaders();
     const { data } = await GET(`favourites`, {}, headers);

@@ -1,10 +1,9 @@
-import { DashboardFilled, FolderAddFilled } from '@ant-design/icons';
+import { FolderAddFilled } from '@ant-design/icons';
 import { Button, Checkbox, Col, Form, Input, notification, Row, Table, Tag, TimePicker, Typography } from 'antd';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { AddFavourite, FavouriteList } from '../components';
-import { initCollectionsLoad } from '../store/actions/collections';
+import { AddFavourite } from '../components';
 import { addCollection } from '../store/services/api';
 import { initRestaurantsLoad } from './../store/actions/restaurant';
 
@@ -84,7 +83,7 @@ const Home = ({ loadRestaurants, restaurants, loadCollections }) => {
     const { selectedRowKeys, selectedRestaurants } = state;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
- 
+
     const openNotification = (message) => {
         notification.open({
             placement: 'bottomRight',
