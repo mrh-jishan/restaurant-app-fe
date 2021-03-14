@@ -1,4 +1,4 @@
-import { Button, Col, Row, Space, Table, Tag, Typography } from 'antd';
+import { Col, Row, Table, Typography } from 'antd';
 import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { initInvitationsLoad } from '../store/actions/invitations';
@@ -35,7 +35,7 @@ const Invitations = ({ loadInvitations, invitations }) => {
         <>
             <Row align='middle' justify='center'>
                 <Col>
-                    <Typography.Title>My invitations</Typography.Title>
+                    <Typography.Title>My sent invitations</Typography.Title>
 
                     <Row align='middle' justify='center' gutter={[16, 24]}>
                         <Col span={24}>

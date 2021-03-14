@@ -64,6 +64,11 @@ export const getInvitations = async () => {
     return data;
 }
 
+export const getCollaborates = async (id) => {
+    const { data } = await GET(`collaborates/${id}`, {});
+    return data;
+}
+
 
 export const signOut = () => {
     localStorage.clear();

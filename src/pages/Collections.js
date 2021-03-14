@@ -1,5 +1,5 @@
 import { FolderAddFilled } from '@ant-design/icons';
-import { Button, Col, notification, Row, Space, Table, Tag, Typography } from 'antd';
+import { Button, Col, notification, Row, Table, Tag, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { InviteFriends } from '../components';
@@ -31,16 +31,16 @@ const Collections = ({ loadCollections, collections }) => {
                 </span>
             ),
         },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (text, record) => (
-                <Space size="middle">
-                    <Button type="primary">Update</Button>
-                    <Button danger>Delete</Button>
-                </Space>
-            ),
-        },
+        // {
+        //     title: 'Action',
+        //     key: 'action',
+        //     render: (text, record) => (
+        //         <Space size="middle">
+        //             <Button type="primary">Update</Button>
+        //             <Button danger>Delete</Button>
+        //         </Space>
+        //     ),
+        // },
     ];
 
     const initloadCollections = useCallback(() => {
