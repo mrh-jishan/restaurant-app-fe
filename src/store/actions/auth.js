@@ -11,3 +11,8 @@ export const successLogin = (user, token) => ({
     user: user,
     token: token
 })
+
+
+export const logoutAction = () => ({
+    type: LOGIN.LOGOUT
+})

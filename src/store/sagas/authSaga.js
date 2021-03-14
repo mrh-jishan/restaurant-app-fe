@@ -1,7 +1,7 @@
 import { call, select, takeEvery, put } from 'redux-saga/effects';
 import { successLogin } from '../actions/auth';
 import { LOGIN } from '../constants';
-import { getLocalStorage, saveLocalStorage } from '../services/api';
+import { getLocalStorage, saveLocalStorage, signOut } from '../services/api';
 
 
 function* loadTokenSaga() {
@@ -18,7 +18,15 @@ function* authorizeSaga() {
 }
 
 
+
+function* logoutSaga() {
+    yield call(signOut)
+}
+
+
 export default function* watchAuth() {
     yield call(loadTokenSaga)
     yield takeEvery(LOGIN.AUTH_SUCCESS, authorizeSaga);
+
+    yield takeEvery(LOGIN.LOGOUT, logoutSaga);
 }

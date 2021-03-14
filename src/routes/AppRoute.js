@@ -1,13 +1,15 @@
 import { Layout, Menu } from 'antd';
 import React, { useEffect, useState } from "react";
+import { connect } from 'react-redux';
 import { Route, Switch } from "react-router-dom";
 import Footer from '../components/Footer';
 import history from '../history';
-import { Invitations, Home, Collections } from '../pages';
+import { Collections, Home, Invitations } from '../pages';
+import { logoutAction } from '../store/actions/auth';
 
 const { Header, Content } = Layout;
 
-const AppRoute = () => {
+const AppRoute = ({ logout }) => {
 
     const [current, setCurrent] = useState(null)
 
@@ -18,7 +20,8 @@ const AppRoute = () => {
 
     const handleClick = (e) => {
         if (e.key === 'logout') {
-            // logOut();
+            logout();
+            history.push('/auth/login')
         } else {
             setCurrent(e.key)
             history.push(e.key)
@@ -55,4 +58,10 @@ const AppRoute = () => {
     );
 }
 
-export default AppRoute;
+
+
+const mapDispatchToProps = dispatch => ({
+    logout: () => dispatch(logoutAction())
+});
+
+export default connect(null, mapDispatchToProps)(AppRoute);
