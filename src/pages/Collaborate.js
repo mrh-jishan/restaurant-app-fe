@@ -1,10 +1,17 @@
-import { Button, Col, Row, Space, Table, Tag, Typography } from 'antd';
+import { Button, Col, Layout, Row, Space, Table, Tag, Typography } from 'antd';
 import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { initCollaborateLoad } from '../store/actions/collaborate';
+import { Footer } from './../components';
 
-const Collaborate = ({ loadCollaborate, collaborates }) => {
 
+const { Content } = Layout;
+
+
+const Collaborate = ({ loadCollaborate, collaborates, match }) => {
+
+
+    const { params } = match;
 
     const columns = [
         {
@@ -40,8 +47,8 @@ const Collaborate = ({ loadCollaborate, collaborates }) => {
     ];
 
     const initloadcollaborates = useCallback(() => {
-        loadCollaborate()
-    }, [loadCollaborate]);
+        loadCollaborate(params.token)
+    }, [loadCollaborate, params]);
 
     useEffect(() => {
         initloadcollaborates()
@@ -50,28 +57,33 @@ const Collaborate = ({ loadCollaborate, collaborates }) => {
 
     return (
         <>
-            <Row align='middle' justify='center'>
-                <Col>
-                    <Typography.Title>Collection list</Typography.Title>
+            <Layout className="layout">
+                <Content className="site-layout" style={{ padding: '0 50px', marginTop: 64 }}>
+                    <Row align='middle' justify='center'>
+                        <Col>
+                            <Typography.Title>Collection list</Typography.Title>
 
-                    <Row align='middle' justify='center' gutter={[16, 24]}>
-                        <Col span={24}>
-                            <Table
-                                size="large"
-                                columns={columns}
-                                rowKey="id"
-                                dataSource={collaborates}
-                                bordered />
+                            <Row align='middle' justify='center' gutter={[16, 24]}>
+                                <Col span={24}>
+                                    <Table
+                                        size="large"
+                                        columns={columns}
+                                        rowKey="id"
+                                        dataSource={collaborates}
+                                        bordered />
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
-                </Col>
-            </Row>
+                </Content>
+                <Footer />
+            </Layout>
         </>
     )
 }
 
 const mapDispatchToProps = dispatch => ({
-    loadCollaborate: () => dispatch(initCollaborateLoad()),
+    loadCollaborate: (token) => dispatch(initCollaborateLoad(token)),
 
 });
 

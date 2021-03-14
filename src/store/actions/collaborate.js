@@ -1,8 +1,9 @@
 import { COLLABORATE } from "../constants";
 
 
-export const initCollaborateLoad = () => ({
+export const initCollaborateLoad = (token) => ({
     type: COLLABORATE.LOAD_INIT,
+    token: token
 })
 
 export const successCollaborateLoad = (collaborates) => ({

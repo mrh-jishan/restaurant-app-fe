@@ -66,7 +66,11 @@ export const getInvitations = async () => {
 
 export const getCollaborates = async (id) => {
     const { data } = await GET(`collaborates/${id}`, {});
-    return data;
+    if (data.success) {
+        return data;
+    } else {
+        throw Error('Data not able to fetch');
+    }
 }
 
 

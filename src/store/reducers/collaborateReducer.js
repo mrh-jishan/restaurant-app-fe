@@ -2,6 +2,7 @@ import { COLLABORATE } from "../constants";
 
 const initState = {
     err: null,
+    token: null,
     isloading: false,
     collaborates: [],
 }
@@ -12,6 +13,7 @@ const collaborateReducer = (state = initState, action) => {
         case COLLABORATE.LOAD_INIT:
             return {
                 ...state,
+                token: action.token,
                 isloading: true,
             }
 

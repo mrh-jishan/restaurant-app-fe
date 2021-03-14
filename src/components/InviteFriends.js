@@ -17,7 +17,7 @@ const InviteFriends = ({ isModalVisible, handleOk, handleCancel }) => {
 
     const onSubmit = useCallback((values) => {
         handleOk(values)
-    }, [handleOk, form]);
+    }, [handleOk]);
 
     const closePopup = useCallback(() => {
         form.resetFields();

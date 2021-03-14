@@ -1,15 +1,16 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery, select } from 'redux-saga/effects';
 import { errorCollaborateLoad, successCollaborateLoad } from '../actions/collaborate';
 import { COLLABORATE } from '../constants';
 import { getCollaborates } from '../services/api';
 
 function* initLoadCollaborate() {
     try {
-        const id = "eg3uuuAF8CgbUQa_aYQYag"
-        const { data } = yield call(getCollaborates, id)
+        const { token } = yield select(state => state.collaborates);
+        const { data } = yield call(getCollaborates, token)
+        console.log('data: ', data);
         yield put(successCollaborateLoad(data))
     } catch (e) {
-        yield put(errorCollaborateLoad(e))
+        yield put(errorCollaborateLoad('Sorry! Something went wrong...'))
     }
 }
 
