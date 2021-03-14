@@ -51,6 +51,14 @@ export const getCollection = async () => {
     return data;
 }
 
+
+export const getInvitations = async () => {
+    const headers = getHeaders();
+    const { data } = await GET(`invitations`, {}, headers);
+    return data;
+}
+
+
 export const signOut = () => {
     localStorage.clear();
 }
