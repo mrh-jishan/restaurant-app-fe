@@ -1,5 +1,5 @@
-import { DashboardFilled, FolderAddFilled, ShareAltOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Form, Input, notification, Row, Space, Table, Tag, TimePicker, Typography } from 'antd';
+import { DashboardFilled, FolderAddFilled } from '@ant-design/icons';
+import { Button, Checkbox, Col, Form, Input, notification, Row, Table, Tag, TimePicker, Typography } from 'antd';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -35,7 +35,7 @@ const tailLayout = {
 
 const colors = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple']
 
-const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) => {
+const Home = ({ loadRestaurants, restaurants, loadCollections }) => {
 
     const columns = [
         {
@@ -54,7 +54,7 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
             key: 'open_hours',
         },
         {
-            title: 'Search Hours',
+            title: 'Mathing Query',
             dataIndex: 'opening_hours',
             key: 'opening_hours',
             render: opening_hours => (
@@ -68,16 +68,7 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
                     })}
                 </span>
             ),
-        },
-        {
-            title: 'Share',
-            key: 'action',
-            render: () => (
-                <Space size="middle">
-                    <Button type="primary" shape="circle" icon={<ShareAltOutlined />} />
-                </Space>
-            ),
-        },
+        }
     ];
 
     const [params] = useState({
@@ -85,7 +76,7 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
         offset: 0,
         name: '',
         days: [0, 1, 2, 3, 4, 5, 6],
-        timeRange: [moment('01:00', 'HH:mm'), moment('23:00', 'HH:mm')]
+        timeRange: [moment('08:00', 'HH:mm'), moment('14:00', 'HH:mm')]
     })
 
     const [state, setState] = useState({ selectedRowKeys: [], selectedRestaurants: [] });
@@ -93,16 +84,7 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
     const { selectedRowKeys, selectedRestaurants } = state;
 
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const [visible, setVisible] = useState(false);
-
-    const showDrawer = () => {
-        setVisible(true);
-    };
-    const onClose = () => {
-        setVisible(false);
-    };
-
+ 
     const openNotification = (message) => {
         notification.open({
             placement: 'bottomRight',
@@ -205,9 +187,6 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
                                 Add to collections
                             </Button>
                         </Col>
-                        <Col span={3}>
-                            <Button type='link' icon={<DashboardFilled />} onClick={showDrawer}>My collections</Button>
-                        </Col>
                     </Row>
                     <Row align='middle' justify='center' gutter={[16, 24]}>
                         <Col span={24}>
@@ -234,7 +213,6 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
                         </Col>
 
                         <AddFavourite isModalVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
-                        <FavouriteList onClose={onClose} visible={visible} data={collections} loadCollections={loadCollections} />
                     </Row>
                 </Col>
             </Row>
@@ -243,14 +221,11 @@ const Home = ({ loadRestaurants, restaurants, loadCollections, collections }) =>
 }
 
 const mapDispatchToProps = dispatch => ({
-    loadRestaurants: (params) => dispatch(initRestaurantsLoad(params)),
-    loadCollections: () => dispatch(initCollectionsLoad()),
-
+    loadRestaurants: (params) => dispatch(initRestaurantsLoad(params))
 });
 
 const mapStateToProps = ({ restaurants, collections }) => ({
-    restaurants: restaurants.restaurants,
-    collections: collections.collections
+    restaurants: restaurants.restaurants
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
